@@ -1,0 +1,6 @@
+# dsh-tool-workspace 插件补丁层：把本插件插入 profile 的 bundle 树。
+# 由 package.json 的 dsh.bundle.patch 指向；loader 在 bundle 层之后应用。
+- insert:
+    - id: tool-workspace
+      name: dsh-tool-workspace
+      config: {}
