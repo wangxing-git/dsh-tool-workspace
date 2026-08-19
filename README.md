@@ -13,7 +13,7 @@ DeepSeek Harness 的工作区管理工具集插件：向模型提供工作区注
 | `get_current_workspace` | 获取当前会话目录对应的已注册工作区（未注册时返回 null） | 否 |
 | `create_workspace` | 把一个已存在目录注册为工作区（不创建目录） | 否 |
 | `rename_workspace` | 改显示标题；或改注册路径（delete+create，新 id，会话不迁移） | 仅改路径时 |
-| `delete_workspace` | 删除注册（保留磁盘目录与会话日志） | 是 |
+| `delete_workspace` | 删除注册（保留磁盘目录与会话日志）；其下仍有未归档会话时拒绝删除，需先归档 | 是 |
 
 ## 权限模型
 
@@ -38,7 +38,7 @@ DeepSeek Harness 的工作区管理工具集插件：向模型提供工作区注
    }
    ```
 
-2. 在 profile 目录执行 `pnpm install`。
+2. （仅手动声明时需要）在 profile 目录执行 `pnpm install`；使用 `dsh plugin add` 时内部已自动执行。
 3. `dsh --profile web --dump-config` 确认插件与 6 个工具已加载。
 
 ## 开发
@@ -55,3 +55,4 @@ npm run build       # 产出 lib/
 - `src/approval.ts` —— 破坏性操作的 fail-closed 审批 helper
 - `src/value.ts` —— workspace 投影 + 共享 output schema
 - `src/tools/*.ts` —— 6 个工具实现
+- `src/client.ts` / `src/client/*` —— 客户端注入与工具调用展示（对应 `./client` 导出）
