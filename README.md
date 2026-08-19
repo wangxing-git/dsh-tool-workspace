@@ -23,10 +23,10 @@ DeepSeek Harness 的工作区管理工具集插件：向模型提供工作区注
 
 ## 安装与集成
 
-1. 将本插件 link 到 profile（以 web 为例）：
+1. 从 GitHub 安装到 profile（以 web 为例）：
 
    ```bash
-   dsh plugin --profile web add link:/path/to/dsh-tool-workspace
+   dsh plugin --profile web add github:wangxing-git/dsh-tool-workspace
    ```
 
    或在 `~/.dsh/profiles/web/package.json` 手动声明：
@@ -34,7 +34,7 @@ DeepSeek Harness 的工作区管理工具集插件：向模型提供工作区注
    ```json
    {
      "dsh": { "profile": { "bundles": [ "dsh-tool-workspace" ] } },
-     "dependencies": { "dsh-tool-workspace": "link:/path/to/dsh-tool-workspace" }
+     "dependencies": { "dsh-tool-workspace": "github:wangxing-git/dsh-tool-workspace" }
    }
    ```
 
