@@ -275,4 +275,41 @@ describe('delete_workspace', () => {
     expect(result.deleted).toBe(false)
     expect(approval.requests).toHaveLength(0)
   })
+
+  it('有未归档会话时拒绝删除，不触发审批且记录保留', async () => {
+    const approval = createMockApproval('allowed-once')
+    const mock = boot(['/a'], approval)
+    const ws = await mock.registry.create('/a', 'Alpha')
+    ws.sessionIds.push('sess-1', 'sess-2')
+    await expect(
+      toolOf(mock, 'delete_workspace')({ workspace_id: ws.id }, mockExec(mockAgent())),
+    ).rejects.toMatchObject({ code: 'WORKSPACE_HAS_ACTIVE_SESSIONS' })
+    expect(mock.registry.get(ws.id)).toBeDefined()
+    expect(approval.requests).toHaveLength(0)
+  })
+
+  it('部分归档部分未归档时仍拒绝删除', async () => {
+    const approval = createMockApproval('allowed-once')
+    const mock = boot(['/a'], approval)
+    const ws = await mock.registry.create('/a', 'Alpha')
+    ws.sessionIds.push('sess-1', 'sess-2')
+    mock.registry.archivedSessionIds.push('sess-1') // 仅归档 sess-1，sess-2 仍未归档
+    await expect(
+      toolOf(mock, 'delete_workspace')({ workspace_id: ws.id }, mockExec(mockAgent())),
+    ).rejects.toMatchObject({ code: 'WORKSPACE_HAS_ACTIVE_SESSIONS' })
+    expect(mock.registry.get(ws.id)).toBeDefined()
+    expect(approval.requests).toHaveLength(0)
+  })
+
+  it('会话全部已归档时允许删除', async () => {
+    const approval = createMockApproval('allowed-once')
+    const mock = boot(['/a'], approval)
+    const ws = await mock.registry.create('/a', 'Alpha')
+    ws.sessionIds.push('sess-1', 'sess-2')
+    mock.registry.archivedSessionIds.push('sess-1', 'sess-2')
+    const result = await toolOf(mock, 'delete_workspace')({ workspace_id: ws.id }, mockExec(mockAgent()))
+    expect(result.deleted).toBe(true)
+    expect(mock.registry.get(ws.id)).toBeUndefined()
+    expect(approval.requests).toHaveLength(1)
+  })
 })

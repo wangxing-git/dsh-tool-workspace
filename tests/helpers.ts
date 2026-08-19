@@ -18,6 +18,8 @@ export interface MockRegistry {
   records: Map<string, MockWorkspace>
   /** 被视为「已存在」的目录路径（resolveByPath/create 对不在其中的路径抛错，模拟 realpath ENOENT）。 */
   knownDirs: Set<string>
+  /** 归档会话 id 集合（模拟 registry 全局归档集合 archivedSessionIds）。 */
+  archivedSessionIds: string[]
   list: () => MockWorkspace[]
   get: (id: string) => MockWorkspace | undefined
   create: (path: string, title?: string) => Promise<MockWorkspace>
@@ -57,6 +59,7 @@ export function createMockRegistry(knownDirs: string[] = []): MockRegistry {
   return {
     records,
     knownDirs: knownDirsSet,
+    archivedSessionIds: [],
     get createError() { return createError },
     set createError(value: Error | undefined) { createError = value },
     list: () => [...records.values()],
