@@ -57,6 +57,42 @@ describe('list_workspaces', () => {
     const result = await toolOf(mock, 'list_workspaces')({ include_status: true }, mockExec(mockAgent()))
     expect(result.workspaces[0].status).toBe('ok')
   })
+
+  it('query 关键词对标题做大小写不敏感子串匹配', async () => {
+    const mock = boot(['/a', '/b'])
+    await mock.registry.create('/a', 'Alpha Project')
+    await mock.registry.create('/b', 'Beta Project')
+    const result = await toolOf(mock, 'list_workspaces')({ query: 'ALPHA' }, mockExec(mockAgent()))
+    expect(result.workspaces).toHaveLength(1)
+    expect(result.workspaces[0].title).toBe('Alpha Project')
+  })
+
+  it('query 关键词可命中路径或 id', async () => {
+    const mock = boot(['/a', '/b'])
+    const a = await mock.registry.create('/a', 'Alpha')
+    await mock.registry.create('/b', 'Beta')
+    const byPath = await toolOf(mock, 'list_workspaces')({ query: '/b' }, mockExec(mockAgent()))
+    expect(byPath.workspaces.map((w) => w.title)).toEqual(['Beta'])
+    const byId = await toolOf(mock, 'list_workspaces')({ query: a.id }, mockExec(mockAgent()))
+    expect(byId.workspaces.map((w) => w.title)).toEqual(['Alpha'])
+  })
+
+  it('query 无命中时返回空数组', async () => {
+    const mock = boot(['/a'])
+    await mock.registry.create('/a', 'Alpha')
+    const result = await toolOf(mock, 'list_workspaces')({ query: 'zzz-nothing' }, mockExec(mockAgent()))
+    expect(result.workspaces).toEqual([])
+  })
+
+  it('query 缺失或空白时返回全部（向后兼容）', async () => {
+    const mock = boot(['/a', '/b'])
+    await mock.registry.create('/a', 'Alpha')
+    await mock.registry.create('/b', 'Beta')
+    const noQuery = await toolOf(mock, 'list_workspaces')({}, mockExec(mockAgent()))
+    expect(noQuery.workspaces).toHaveLength(2)
+    const blankQuery = await toolOf(mock, 'list_workspaces')({ query: '   ' }, mockExec(mockAgent()))
+    expect(blankQuery.workspaces).toHaveLength(2)
+  })
 })
 
 describe('get_current_workspace', () => {
