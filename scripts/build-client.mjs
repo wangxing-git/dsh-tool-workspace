@@ -9,9 +9,8 @@ await build({
   // JSX 走 automatic runtime（react/jsx-runtime），与 ui-tool / ui-skill 官方 bundle 一致。
   jsx: 'automatic',
   // react、primitives 由宿主 __ModuleLoader__ 提供，不打包进产物；type-only import
-  // （runtime/tool 的类型）会被擦除，无需 external。
+  // （conversation/tool 的类型）会被擦除，无需 external。
   external: [
-    '@deepseek-ai/dsh-client-runtime/client',
     'react',
     'react/jsx-runtime',
     '@deepseek-ai/dsh-client-ui-primitives',
