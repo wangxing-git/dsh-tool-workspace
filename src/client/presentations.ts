@@ -10,12 +10,12 @@
  */
 import type { ComponentType } from 'react'
 import {
-  IconEditOutline16,
-  IconFolderOpenOutline16,
-  IconListPenOutline16,
-  IconProjectAddOutline16,
-  IconSearchOutline16,
-  IconTrashOutline16,
+  IconEditOutlineMedium,
+  IconFolderOpenOutlineMedium,
+  IconListPenOutlineMedium,
+  IconProjectAddOutlineMedium,
+  IconSearchOutlineMedium,
+  IconTrashOutlineMedium,
 } from '@deepseek-ai/dsh-client-ui-primitives'
 
 /** 工具行前导图标的最小 props 契约（对齐 primitives 图标签名）。 */
@@ -62,32 +62,32 @@ const summarizeIncludeStatus = (args: Record<string, unknown> | undefined): stri
 export const WORKSPACE_TOOL_PRESENTATIONS: Readonly<Record<string, ToolPresentation>> = {
   list_workspaces: {
     title: '列出工作区',
-    icon: IconListPenOutline16,
+    icon: IconListPenOutlineMedium,
     summarize: summarizeIncludeStatus,
   },
   get_workspace: {
     title: '查看工作区',
-    icon: IconSearchOutline16,
+    icon: IconSearchOutlineMedium,
     summarize: summarizeWorkspaceId,
   },
   get_current_workspace: {
     title: '当前工作区',
-    icon: IconFolderOpenOutline16,
+    icon: IconFolderOpenOutlineMedium,
     summarize: summarizeIncludeStatus,
   },
   create_workspace: {
     title: '注册工作区',
-    icon: IconProjectAddOutline16,
+    icon: IconProjectAddOutlineMedium,
     summarize: (args, callId) => firstLine(pickString(args, ['title', 'path']) ?? callId),
   },
   rename_workspace: {
     title: '重命名工作区',
-    icon: IconEditOutline16,
+    icon: IconEditOutlineMedium,
     summarize: (args, callId) => pickString(args, ['new_title', 'new_path']) ?? summarizeWorkspaceId(args, callId),
   },
   delete_workspace: {
     title: '删除工作区',
-    icon: IconTrashOutline16,
+    icon: IconTrashOutlineMedium,
     summarize: summarizeWorkspaceId,
   },
 }
@@ -95,6 +95,6 @@ export const WORKSPACE_TOOL_PRESENTATIONS: Readonly<Record<string, ToolPresentat
 /** 未收录工具名的兜底呈现（避免空白行）。 */
 export const DEFAULT_PRESENTATION: ToolPresentation = {
   title: '工作区工具',
-  icon: IconFolderOpenOutline16,
+  icon: IconFolderOpenOutlineMedium,
   summarize: summarizeWorkspaceId,
 }
